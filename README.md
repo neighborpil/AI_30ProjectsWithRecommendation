@@ -89,6 +89,74 @@
 - 단점
     + 복잡도 증가
 
+### 추천 방법
+- 메모리 기반 추천
+    + 추천이 필요할 때마다 연산하여 추천을 제공
+    + 구현이 쉽지만 계산이 오래 걸리며, 제한된 성능
+    + 협업 필터링, Contents-based filtering
+- 모델 기반 추천
+    + 다량의 데이터로 학습한 모델을 통하여 리소스 효율적인 추천 제공
+    + 학습에 많은 데이터와 리소스가 필요하지만 여러 feature 정보로부터 패턴을 학습함으로써 상대적으로 더 높은 성능을 얻음
+
+### 문제 해결 방법
+1. 문제 정의
+2. 모델 정의
+3. 가르치기
+4. 평가하기
+
+##### Terminology
+- EDA:  Exploratory Data Analysis,
+
+#### 함수와 모형(Model)
+- 머신러닝에서는 x가 주어졌을 때에 y를 뱉어내는 함수를 얻는 것이 목적
+- 모델 종류
+    + 결정적 모형: 무결하고 완전한 관계를 나타내는 모형. 섭씨/화씨
+    + **통계적 모형**: 입력과 출력의 경향성을 나타내는 모형. 오차항을 포함. 몸무게와 키의 상관관계
+ 
+### 손실함수 대표 2개
+- 회귀: MSE, RMSE
+- 분류: Cross Entropy, 실제값(P)과 예측값(Q)의 확률 분포 차이
+    + H(P, Q) = - Sigma P(X_i)log_2Q(X_i)
+
+### 검증 방식
+- Hold-Out: Training set / Validation Set
+- K-fold cross-validation
+- LOOCV: Leave One Cross Validation
+
+
+## Confusion Matrix
+TP - FP
+FN - TN
+
+- FP: Type1 error, 아닌데 맞다고 하는 경우
+- FN: Type2 error, 맞는데 아니다고 하는 경우
+
+- Precisoin = ΣTP / Σ(TP + FP), 참이라고 한 것 중에 실제로 몇개가 참이었는지
+- Recall = ΣTP / Σ(TP + FN), 실제 true인 것 중 몇개를 true로 예측하였는지
+- Accuracy = Σ(TP + TN) / Σ(TP + FP + FN + TN)
+- F1 score = 2 * (Precision * Recall) / (Precision + Recall)
+
+### AUC(Area Under Curve) - 무작위로 찍은 것보다 얼마나 잘했냐
+-  ROC curve의 하단 부의 넓이 비율을 나타내는 값으로 값이 높을수록 좋음
+-  ROC(Receiver-Operating Characteristic) curve: 이진(binary) 분류 모델의 threshold에 따라 변화하는 성능 값을 나타낸 곡선
+    + X축: FP rate, Y축: TP rate
+    + Perfect classifier에 가까울수록 성능이 좋다(즉 AUC가 크다)
+    + Random classifier에 가까울수록 성능이 낮다(즉 AUC가 작다)
+- 추천시스템에서 사용
+    + 추천시스템에서는 class 불균형한 데이터가 대부분이다
+    + AUC는 class 불균형에 무관하다
+    + 추천에는 절대적인 값보다 어느것보다 좋다는 비교를 하는것이라 AUC는 전반적으로 나타내기 때문에 좋다?
+
+
+
+
+
+
+
+
+
+
+
 
 
 
