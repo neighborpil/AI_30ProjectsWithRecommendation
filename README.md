@@ -148,9 +148,31 @@ FN - TN
     + 추천에는 절대적인 값보다 어느것보다 좋다는 비교를 하는것이라 AUC는 전반적으로 나타내기 때문에 좋다?
 
 
+### Ensenble 기법
+- 배깅(Bagging) : Bootstrap Aggregating의 약자, 다르게 샘플링한 데이터로 각각 다른 모델을 학습
+    + bootstrap: 원본 데이터셋에서 복원 추춸(sampling with replacement)한 데이터셋, 데이터의 다양성 확보, 분산을 줄이는 것이 목표
+    + aggregation: 각 데이터셋에서 샘플링 된 결과를 결합
+- 부스팅(Boosting): 모델을 순차적으로 학습시키며, 이전 모델의 약점을 해결하며 성능을 높임
+    + 여러 weak learner를 사용하여 순차적으로 학습
+    + **이전 차례에 잘 못 맞춘 문제에 집중**하여 더 잘 풀도록 유도하는 알고리즘
+    + Bagging과는 달리, 이전 모델의 예측 성능에 따라 weighted sampling을 수행함
+    + 모델의 **편향**을 줄이는데 목표
+    + XGBoostt(Level-wise tree grouth adopted): 모든 feature에 대하여 동등하게 학습
+    + LGBM(Leaf-wise tree grouth adopted): 구분을 잘하는 feature에 대하여 집중하여 학습
+        - 장점
+            + 높은 성능, prediction/classification에서 딥러닝 방법론에 비교할 수 있을 정도로 추천성능이 높므
+            + 확장 가능성, feature 히스토그램화 방식으로 자원의 효율적인 학습이 가능함
+            + 구현 및 관리의 효율성: 범용 알고리즘의 특성상 API가 잘 활발히 관리/개선되고 있음
+            + 타 모듈(하이퍼 파라미터 최적화, 서빙 관련 등)과 호환성이 높음
+            + 해석 가능성: 행렬분해 기반 방법론에 배해 모델의 판단을 해석하기 용이함
+            + 자체적으로 제공하는 Feature Importance 및 기타 XAI 알고리즘을 손쉽게 적용할 수 있음
+    + GOSS(Gradient-based One-side Sampling): 구분을 잘하는 feature에 대하여 가중치를 주어 학습, 마이너한 feature에 대해서도 작은 비율이지만 학습에 사용함으로써 효율성을 높일 수 있다
+- 스태킹(Stacking): 서로 다른 모델의 출력에서 최종 출력을 만드는 메타 모델, 여러개의 모델의 결과값을 feature처럼 학습시켜 다시 사용
 
 
-
+### Matrix Factorization(행렬 분해)
+- 평점 행렬을 두개의 작은 행렬로 쪼개어, 그들의 곱으로 유저의 평점을 예측하는 모델
+- 각각 행렬은 유저 잠재 요인(User latent factor), 아이템 잠재 요인(Item latent factor)을 나타냄
 
 
 
