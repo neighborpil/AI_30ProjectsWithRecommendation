@@ -221,7 +221,8 @@ FN - TN
     + 유저 및 아이템을 가리키는 one-hot vector를 구성
     + 이후 추가로 다양한 피처, 암식적 정보등을 포함
 
-
+##### Terminology
+- CVR: Conversion rate, 마케팅에서 광고같은 것을 했을때에 전환률
 
 
 
