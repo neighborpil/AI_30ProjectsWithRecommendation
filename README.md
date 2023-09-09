@@ -126,6 +126,7 @@
 
 ## Confusion Matrix
 TP - FP
+
 FN - TN
 
 - FP: Type1 error, 아닌데 맞다고 하는 경우
