@@ -170,18 +170,56 @@ FN - TN
 - 스태킹(Stacking): 서로 다른 모델의 출력에서 최종 출력을 만드는 메타 모델, 여러개의 모델의 결과값을 feature처럼 학습시켜 다시 사용
 
 
-### Matrix Factorization(행렬 분해)
+## Matrix Factorization(행렬 분해)
 - 평점 행렬을 두개의 작은 행렬로 쪼개어, 그들의 곱으로 유저의 평점을 예측하는 모델
 - 각각 행렬은 유저 잠재 요인(User latent factor), 아이템 잠재 요인(Item latent factor)을 나타냄
+- latent factor를 가중치로 두어 실제 평점을 가장 잘 복원 할 수 있는 latent factor를 찾음
+- 최적화 방법
+    + SGD(Stochastic Gradient Descent)
+        - r_ui: 유저 u의 아이템 i에 대한 평점(실제 값)
+        - p^T_u q_i: 행렬 P와 Q에서 가져온, 유저 u와 아이템 i에 대한 latent factor의 내적값
+    + ALS(Alternating Least Squares)
+        + SGD와 동일한 Loss function을 사용
+        + 최적화 시에, 두 행렬 중 하나의 행렬을 freeze하고 다른 한 행렬만을 최적화
+- latent factor의 경우에는 사람이 해석 할 수 없는 의미가 숨어있는 수치 값으로 나타나게 됨
+- 이러한 latent factor를 어떻게 찾는지가 Matrix Factorization 알고리즘의 핵심적 요소
+- Matrix Factorization 알고리즘의 종류에는 SVD, NMF 등이 있음
 
+##### Terminology
+- convex: 볼록한
+- eigenvector: 고유 벡터
 
+### SVD(Singular Value Decomposition)
+- 특이값 분해
+- 얼굴 이미지를 행렬로 표현하여 중요한 latent factor K개만 사용하여 원래 행렬을 복원한 그림
+- k가 늘어갈수록 선명해지지만, 그 증가하는 선명도는 점차 줄어듬
+- eigenface: 얼굴 인식을 위한 eigenvector들의 집합
 
+### 특이값 분해의 기하적 설명
+- M = UΣV^T
+- 고유값 분해(Eigen Decomposition): 정방행렬(m*m)을 고유벡터 행렬과 고유값 행렬로 분해하는 기법
+- 특이값 분해(Singular Value Decomposition): 정방이 아닌 m*n 행렬을 U, V라는 직교행렬과 고유값 행렬 Sigma로 분해하는 기법
 
+### truncated-SVD
+- SVD 이후 생성된 M개의 singular value 중, 가장 중요한 k개의 singular value만을 남김으로써 truncate함
+- 이와 같은 방식으로 U와 V의 low-rank matrix를 구하고, 각 행렬 벡터는 latent factor를 나타내는 low-rank factor로 간주 할 수 있음
+- 이 truncate된 행렬로 복원한 기존 행려르이 근사행렬의 원소에는 유저가 평가하지 않은 아이템에 대한 평점 근사치가 들어가 있음
 
+## Factorization Machine
+- tree 기반 모델(Contents-based filtering), Matrix Factorization(Collaborative filtering) 이 두가지의 접근 방식을 결합한 방식
 
-
-
-
+- MF 한계
+    + Interaction Matrix 형태로 입력을 받음
+    + Interaction Matrix가 매우 Sparse할 경우, 잘 동작하지 않는 문제
+    + 신규 유저에 대한 추천이 어려움
+- (Tree 기반) Regression 모델의 한계
+    + Interaction Matrix를 직접적으로 활용 할 수 없음
+    + Feature간의 Interaction을 반영 할 수 없음.
+- FM은 interaction도 활용하고 featrue도 활용하는 방식
+- 구성
+    + 각 행이 회귀 문제의 sample과 같이 X 피처와 y 타겟으로 구성
+    + 유저 및 아이템을 가리키는 one-hot vector를 구성
+    + 이후 추가로 다양한 피처, 암식적 정보등을 포함
 
 
 
