@@ -231,8 +231,171 @@ FN - TN
 - FFM에서는 feature가 갖는 여러 값(field)마다 latent vector를 할당하여, 더욱 복잡한 feature interaction을 학습 할 수 있도록 구성
 
 
+## 추천 시스템의 평가 방법
+1. 정확도 지표(Precision, Recall등) 적절한지 여부를 측정
+2. Business Metric과 관련된 기타 지표
+
+- 기존 모델 메트릭은 그대로 쓸 수 없다.
+- precision, recall, accuracy등의 지표는 단순히 정답과 예측 값의 비율을 측정. 즉 **순서정보**에 대한 가중치가 전혀 반영되지 않음
+- 추천시스템과 같은 Information Retrieval 문제에서는, 맞췄는지 여부 뿐 아니라 얼마나 잘 맞추었는지가 중요함(상대적 순서가 중요)
+- 가령, 나와 꼭 맞는 영화를 10번째에 놓아서 맞춘 것과 1번째 놓아서 맞춘 것은 추천의 성능이 다르다고 볼 수 있음
+- 따라서 순서 정보까지 반영 할 수 있는 지표가 필요
+- 관련된 것이 언제 처음 나왔는지가 중요
+    + MRR
+    + MAP
+    + NDCG
+
+## 정확도 기반 평가 지표
+### MRR(Mean Reciprocal Rank)
+- binary relevance based metrics로, 이진적으로 좋은 추천인지 나쁜 추천인지를 가려내는 지표
+- "유관 상품이 최초로 등장한 곳은 몇번째인가"를 측정함으로써 계산
+- 아이템이 3개일때에 관련 있는 것(Relevant Item)이 3번째로 등장하였을 경우는 1/3, 첫번째로 등장하였을 경우는 1 이와같이 측정 후 모든 아이템의 합을 구함
+- 장점
+    + 계산이 쉽고, 해석이 간단
+    + 가장 처음 등장하는 유관 상품에 초점을 둠, 유저가 "나를 위한 최적상품"을 찾고 있을 때에 가장 적합
+    + 고객이 잘 알고 있는 아이템을 찾고 있을 때에 적합
+- 단점
+    + 추천 리스트의 나머지 제품들에 대해서는 측정을 하지 않음. 리스트의 하나에만 집중함
+    + 유관 상품을 1개 품고 있는 리스트나 여러개 품고 있는 리스트나 동일하게 취급
+    + 유관 상품 목록을 원하는 경우(여러개 유관품목 중 비교를 원하는 경우) 좋은 척도가 아님
+
+### MAP(Mean Average Precision)
+- 맞춘 곳까지 precision을 구하고, 또 구한다
+- 역시 binary relevance based metrics로, 이진적으로 좋은 추천인지 나쁜 추천인지를 가려내는 지표
+- 리스트 내에 유관상품이 등장할때마다 precision을 구하고, 이를 평균(Average Precision)을 냄
+- 결과로 생성된 여러 리스트간의 평균을 내서 (Mean AP) 평가하는 방식
+- 장점
+    + Precision-Recall 곡선 아래의 복잡한 영역을 단일 평점으로 나타낼 수 있음
+    + 랭킹이 높은 아이템에 대해서 더 높은 가중치를 부여함. 이는 대부분의 추천 상황을 생각해보면 타당한 처리 방식
+- 단점
+    + binary 상황에서만 작동함.
+    + 평점의 scale이 이진적이지 않을 경우(1~5점의 평점)는 적합하지 않음
+
+### NDCG(Normalized Discounted Cumulative Gain)
+- 특정 고객에게 5개의 상품을 추천하는 경우, 고객은 각각의 아이템에 대하여 각각의 유관도(relevance)를 가짐
+    + ['사과': 0.9, '오렌지': 0.8, '코카콜라': 0.7, '카시트': 0.6, '휴지': 0.5]
+    + A 알고리즘 [사과, 오렌지, 휴지, 코카콜라, 카시트]의 순으로 추천
+    + B 알고리즘 [휴지, 오렌지, 카시트, 코카콜라, 사과] 순으로 추천
+ 
+<img width="701" alt="image" src="https://github.com/neighborpil/AI_30ProjectsWithRecommendation/assets/22423285/8297eecd-f7f0-40ad-b6c0-6619d2bf4190">
+
+- CG(Cumulative Gain): i번째 포지션의 평가된 유관도의 누적합(추천된 총 p번까지의 추천 상품들의)
+- DCG(Discounted Cumulative Gain): CG의 각 항을 log(i+1)으로 나누어 줌. 이는 후반부(e.g. 100번째)로 갈수록 분모가 커지는 효과를 낳는데 이로써 가장 중요한 품목을 잘 맞추는 것에 대하여 더 높은 점수를 부여
+- IDCG(Ideal Discounted Cumulative Gain): Corpus 내 p번자리까지의 유관한 문서들의 목록에 대한 총 누적 이득(도달 할 수 있는 최고의 값)
+- NDCG(Normalized Discounted Cumulative Gain): DCG를 IDCG로 나누어 표준화해준 값
+- Average NDCG Across User: 유저간의 NDCG의 총합
+- 장점
+    + 평가된 유관도 값을 고려함
+    + MAP에 비교해서 순위 매겨진 품목들의 위치를 평가하는데 우수함. MAP는 유관/무관만 판단하기 때문
+    + Logarithmic discounting factor 텀으로 인해 일관성 있는 척도로 사용될 수 있음
+- 단점
+    + 불완전 ratings가 있을 경우(평가를 안내린 제품) 문제가 있음
+    + IDCG가 0일 경우 직접 다루어 주어야함. 이 경우는 유저가 유관한 제품을 가지고 있지 않을 경우 발생
+
+## 기타 평가 지표
+- 추천 시스템은 비지니스 종속성이 크므로 다양한 목표를 얼마나 충족하여 추천하는지에 대한 지표들
+
+### Hit rate
+- 유저에게 추천한 것 중, 마음에 드는 것이 있는가?
+
+<img width="612" alt="image" src="https://github.com/neighborpil/AI_30ProjectsWithRecommendation/assets/22423285/cdba9a7c-b16c-413e-a808-20bb3bcf1398">
+
+### Diversity
+- 추천된 아이템이 얼마나 다른지
+- 비슷한 것만 보여주는 것이 아니므로 추천경험을 개선해 줄수 있음
+- 아이템간의 유사도를 계산함으로써 평균을 냄
+
+### Novelty
+- 참신성. 추천하는 아이템이 유저에게 얼마나 알려지지 않았는지를 측정
+- 모두가 알고 있는 곳보다 숨겨진 곳을 알려줄 경우 높게 나옴
+- 추천아이템의 평균적인 인기를 구해서 비교, 추천 아이템의 인기가 낮을 수록 좀더 참신하다고 여겨짐
+
+### Serendipity
+- 의도적으로 찾지 않았음에도 뭔가 새로운 좋은 것을 발견하는 일
+- 정량화 어려움
+
+## XAI(Explainable AI)
+- 설명가능한 AI
+- 추천 시스템의 특징
+    + 도메인 종속성: 서비스되는 도메인에 따라 아이템이 크게 다름
+    + 비지니스 목적의 다양성: 다양한 비지니스 목표가 존재
+- 의사결정 프로세스, 입력, 출력에 대하여 명확한 설명을 제공함으로써 AI 모델을 보다 투명하고 해석 가능하게 만드는 것이 목표
+- XAI 필요성
+    + 머신러닝 모델으 디버깅에 필요. 모델의 feature에 대한 선호도를 분석하므로써 insight를 얻을 수 있음
+    + 사용자 신뢰성. 추천의 근거를 제시 할 수 있음
+    + 모델 편항 분석. 편항된 모델을 판단하고 이를 보정하는데 사용할 수 있음
+
+### 대리분석(Surrogate Analysis)
+- 설명하고자 하는 모델이 지나치게 복잡해서 해석하기 어려울 때에, 해석 가능한 **대리 모델**(surrogate model)을 사용하여 기존의 모델을 분석하는 방법
+- SVM 분류기와 같이 성능은 좋지만 해석이 어려운 모델이 있을 때에 Logistic regression 모델처럼 설명 가능성은 높지만 성능은 낮은 모델을 대리 모델로 사용해 해당 모델의 계수를 기반으로 모델 판단 메커니즘을 어림짐작 하는 것
+- 모델에 상관없이 적용 가능
+- global 대리분석: 전체 모델의 중요 변수를 새로운 모델로 대체해서 파악하는 방법
+- local 대리분석: 개별 샘플에 대한 모델의 판단을 분석하는 방법 
+
+### LIME 알고리즘
+- XAI 알고리즘의 한 종류
+- Local Interpretable Model-agnostic Explanations
+    + Interpretable Explanation: 각 예측을 내림에 있어 어떤 feature가 사용되었는지에 대한 설명을 제공한다는 의미
+    + Local: observation specific하다는 것을 의미. **한 개인 또는 샘플**에 대하여 내려진 판단이 어떻게 내려진 것인지를 분석
+    + Model-agnostic: 어떤 모델을 사용하든지 간에 무관하게 사용될 수 있음을 의미
+- 학습 메커니즘
+  + 결정 경계를 분석하여 판단 메커니즘을 제공
+  1. 데이터 뒤섞기(permute)
+  2. 뒤섞은 데이터와 기존 관측치 사이의 거리 측정
+  3. blackbox model을 사용해 새로운 데이터를 대상으로 예측 수행
+  4. 뒤섞은 데이터로부터 복잡한 모델의 출력을 가장 잘 설명하는 m개의 feature 선택
+  5. 여기서 뽑은 m개의 feature로 뒤섞은 데이터를 대상으로 단순한 모델 적합, 유사도 점수를 가중치로 사용
+  6. 단순 모델의 가중치는 곧 복잡한 모델의 local한 행동을 설명하는데 사용됨
+- LIME의 손실함수
+
+ <img width="1040" alt="image" src="https://github.com/neighborpil/AI_30ProjectsWithRecommendation/assets/22423285/8f0e871d-e0fc-4c45-bb7d-9b09d865dad8">
+
+### SHAP
+- SHapley Additive exPlanaitions
+- 머신러닝 모델의 예측 결과를 설명하기 위한 알고리즘 중 하나로, Shapley value에 기반함
+- Shapley value: 게임이론에서 도입된 개념으로, feature의 전체 결과에 대한 기여도에 따라 게임 내 각 플레이어에게 공을 공평하게 나눌 수 있도록 게산한 값
+- feature가 추가되거나 빠질때에 모델의 결과가 얼마나 달라지는지에 대하여 계산
+
+<img width="1077" alt="image" src="https://github.com/neighborpil/AI_30ProjectsWithRecommendation/assets/22423285/b4331560-6e6d-4bc5-b446-4aee87fc25ad">
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
 
