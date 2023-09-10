@@ -224,7 +224,11 @@ FN - TN
 ##### Terminology
 - CVR: Conversion rate, 마케팅에서 광고같은 것을 했을때에 전환률
 
-
+### FFM
+- Field-aware Factorization Machine)
+- FM에서 파생된 모델로, CTR(Click Through Rate) prediction 문제에 주로 사용
+- FM에선느 feature마다 1개의 latent vector를 사용
+- FFM에서는 feature가 갖는 여러 값(field)마다 latent vector를 할당하여, 더욱 복잡한 feature interaction을 학습 할 수 있도록 구성
 
 
 
