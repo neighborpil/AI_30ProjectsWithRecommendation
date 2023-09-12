@@ -350,7 +350,7 @@ FN - TN
 
  <img width="1040" alt="image" src="https://github.com/neighborpil/AI_30ProjectsWithRecommendation/assets/22423285/8f0e871d-e0fc-4c45-bb7d-9b09d865dad8">
 
-### SHAP
+### SHAP 알고리즘
 - SHapley Additive exPlanaitions
 - 머신러닝 모델의 예측 결과를 설명하기 위한 알고리즘 중 하나로, Shapley value에 기반함
 - Shapley value: 게임이론에서 도입된 개념으로, feature의 전체 결과에 대한 기여도에 따라 게임 내 각 플레이어에게 공을 공평하게 나눌 수 있도록 게산한 값
@@ -358,7 +358,16 @@ FN - TN
 
 <img width="1077" alt="image" src="https://github.com/neighborpil/AI_30ProjectsWithRecommendation/assets/22423285/b4331560-6e6d-4bc5-b446-4aee87fc25ad">
 
+### EBM 알고리즘
+- 복잡한 알고리즘일수록 성능은 높으나 해석이 어려워짐
+- 비지니스적인 목적을 위해 설명 가능성이 필요할지라도, 앞서 배운 SHAP, LIME과 같은 대체적인 알고리즘에 의존할 수 밖에 없음
+- EBM이란?
 
+<img width="1083" alt="image" src="https://github.com/neighborpil/AI_30ProjectsWithRecommendation/assets/22423285/404c7720-c2a7-4649-a23e-3baa39ce1403">
+
+- EBM 학습 방식
+
+<img width="1190" alt="image" src="https://github.com/neighborpil/AI_30ProjectsWithRecommendation/assets/22423285/2e86a6b6-6ff2-40f0-88a3-d7e55298bd63">
 
 
 
