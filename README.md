@@ -371,6 +371,19 @@ FN - TN
 
 
 
+# Deep Learning
+
+### Loss Function
+- Sigmoid
+- ReLU
+- LeakyReLU
+
+### 초기화 알고리즘
+- Xavier: 0근방에서 생성되게, 입출력 노드의 수에 맞게
+
+##### Terminology
+- POS: Part of Speech
+- 
 
 
 
