@@ -161,4 +161,9 @@ cython_debug/
 .DS_Store
 
 code_test/.DS_Store
-code_test/.idea/
+code_test/.idea/**
+
+.idea/**
+
+code_test/data/**
+example/**
